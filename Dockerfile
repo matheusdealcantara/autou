@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y build-essential && rm -rf /var/lib/apt/
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Baixa os pacotes NLTK durante o build
+RUN python -m nltk.downloader stopwords punkt wordnet omw-1.4
+
 COPY . .
 
 # torna entrypoint executável
