@@ -18,4 +18,4 @@ RUN chmod +x ./entrypoint.sh
 EXPOSE 10000
 
 ENTRYPOINT ["./entrypoint.sh"]
-CMD ["gunicorn", "autou.wsgi:application", "-b", "0.0.0.0:${PORT:-10000}", "--workers", "2"]
+CMD ["sh", "-c", "gunicorn autou.wsgi:application -b 0.0.0.0:${PORT:-10000} --workers 2"]
