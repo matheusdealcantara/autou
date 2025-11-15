@@ -1,5 +1,3 @@
-# Essa função é responsável por classificar os emails entre produtiovo e,
-# improdutivo.
 import os
 
 from dotenv import load_dotenv
@@ -7,8 +5,10 @@ from openai import OpenAI
 
 # Load environment variables from .env file
 load_dotenv()
-client = OpenAI(api_key=os.getenv('NSCALE_SERVICE_TOKEN'), 
-                base_url="https://inference.api.nscale.com/v1")
+
+def _get_client():
+    return OpenAI(api_key=os.getenv('NSCALE_SERVICE_TOKEN'),
+                  base_url="https://inference.api.nscale.com/v1")
 
 def classify_text(text: str):
     message = [{
@@ -23,10 +23,14 @@ def classify_text(text: str):
         Classifique o email abaixo:\n\nEmail:\n{text}"""
     }]
 
-    response = client.chat.completions.create(
-        model="Qwen/Qwen3-4B-Instruct-2507", 
-        messages= message,
-    )
-
-
-    return response.choices[0].message.content
+    try:
+        client = _get_client()
+        response = client.chat.completions.create(
+            model="Qwen/Qwen3-4B-Instruct-2507",
+            messages=message,
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        print("categorize.classify_text error:", str(e))
+        # fallback rápido para não quebrar a view
+        return "Improdutivo"
